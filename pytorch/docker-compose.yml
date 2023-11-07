@@ -1,0 +1,25 @@
+version: 3.8
+
+services:
+  nap-jupyter-torch:
+    build: .
+    container_name: nap_jupyter_torch_server
+    command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.allow_origin_pat=https://.*vscode-cdn\.net -e JUPYTER_TOKEN="easy"
+    ports: 
+      - 8080:8888
+    volumes:
+      - './../ENTE-Playground/:/home/ml_user/ENTE-Playground'
+      - './../NAP/:/home/ml_user/NAP'
+    ulimits:
+      memlock: -1
+    shm_size: '32gb'
+    environment:
+      - uid=1000
+      - gid=1000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
