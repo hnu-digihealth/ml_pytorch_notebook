@@ -1,0 +1,4 @@
+## define APT packages to install during docker image creation
+# hardware/gpu monitoring
+htop
+nvtop

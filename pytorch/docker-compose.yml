@@ -1,25 +1,39 @@
-version: 3.8
+version: "3.8"
 
 services:
   nap-jupyter-torch:
-    build: .
+    build: 
+      dockerfile: Dockerfile
+      image: nap_juypter_gpu_server
     container_name: nap_jupyter_torch_server
-    command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.allow_origin_pat=https://.*vscode-cdn\.net -e JUPYTER_TOKEN="easy"
+    command: jupyter-lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.allow_origin_pat=https://.*vscode-cdn\.net
     ports: 
       - 8080:8888
     volumes:
-      - './../ENTE-Playground/:/home/ml_user/ENTE-Playground'
-      - './../NAP/:/home/ml_user/NAP'
-    ulimits:
-      memlock: -1
-    shm_size: '32gb'
+      - './data/:/home/ml_user/data'
+      - './code/:/home/ml_user/code'
     environment:
       - uid=1000
       - gid=1000
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - JUPYTER_TOKEN=easy
+    ulimits:
+      memlock: -1
+    shm_size: '32gb'
+    # deploy:
+    #   # no restrictions
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    #   # with restrictions
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           capabilities: [gpu]
+    #           device_ids: ["0"]  # select one GPU
+    #     limits:
+    #       cpus: "6"
+    #       memory: 19g
